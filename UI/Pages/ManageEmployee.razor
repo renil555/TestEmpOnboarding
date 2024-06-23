@@ -3,26 +3,31 @@
 @using Newtonsoft.Json
 @using Utility
 
+<PageTitle>Manage Employee</PageTitle>
 
-<MudCard Height="400px" Width="60%" Class="text-center mx-auto">
+<MudCard Style="width: 60%" Class="text-center mx-auto">
     <MudContainer>
         <MudCardHeader>
             <CardHeaderContent>
                 <MudText Typo="Typo.h6">Details</MudText>
             </CardHeaderContent>
         </MudCardHeader>
-        <EditForm Model="@employee" OnValidSubmit="SaveEmployee">
-            <DataAnnotationsValidator />
-            <MudTextField Required="true" Label="First Name" @bind-Value="employee.FirstName" For="@(() => employee.FirstName)"></MudTextField>
-            <MudTextField Required="true" Label="Last Name" @bind-Value="employee.LastName" For="@(() => employee.LastName)"></MudTextField>
-            <MudTextField Required="true" Label="Department" @bind-Value="employee.Department" For="@(() => employee.Department)"></MudTextField>
-            <MudTextField Required="true" InputType="InputType.Email" Label="Email" @bind-Value="employee.Email" For="@(() => employee.Email)"></MudTextField>
-            <MudDatePicker Required="true" MaxDate="DateTime.Now" Label="DOB" @bind-Date="employee.DateOfBrith" For="@(() => employee.DateOfBrith)" ></MudDatePicker>
-            <MudItem Class="d-flex py-5 float-end">
-                <MudButton OnClick="Cancel"  Color="Color.Primary">Cancel</MudButton>
-                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Submit</MudButton>
-            </MudItem>
-        </EditForm>
+        <MudCardContent>
+            <EditForm Model="@employee" OnValidSubmit="SaveEmployee">
+                <DataAnnotationsValidator />
+                <MudTextField Required="true" Label="First Name" @bind-Value="employee.FirstName" For="@(() => employee.FirstName)"></MudTextField>
+                <MudTextField Required="true" Label="Last Name" @bind-Value="employee.LastName" For="@(() => employee.LastName)"></MudTextField>
+                <MudTextField Required="true" Label="Department" @bind-Value="employee.Department" For="@(() => employee.Department)"></MudTextField>
+                <MudTextField Required="true" InputType="InputType.Email" Label="Email" @bind-Value="employee.Email" For="@(() => employee.Email)"></MudTextField>
+                <MudDatePicker Required="true" MaxDate="DateTime.Now" Label="DOB" @bind-Date="employee.DateOfBrith" PickerVariant="PickerVariant.Dialog" For="@(() => employee.DateOfBrith)"></MudDatePicker>
+                <MudCardActions Class="justify-content-end">
+                    <MudItem Class="d-flex py-5">
+                        <MudButton OnClick="Cancel" Color="Color.Primary">Cancel</MudButton>
+                        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Submit</MudButton>
+                    </MudItem>
+                </MudCardActions>
+            </EditForm>
+        </MudCardContent>
     </MudContainer>
 </MudCard>
 
