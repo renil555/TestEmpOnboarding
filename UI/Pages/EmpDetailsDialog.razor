@@ -1,0 +1,38 @@
+﻿@using MudBlazor
+@using Utility
+
+
+<MudDialog>
+    <TitleContent>Employee Details</TitleContent>
+    <DialogContent>
+        <EditForm Model="@employee" OnValidSubmit="OnValidSubmit">
+<DataAnnotationsValidator/>
+            <MudTextField Required="true" Label="First Name" @bind-Value="employee.FirstName" For="@(() => employee.FirstName)"></MudTextField>
+            <MudTextField Required="true" Label="Last Name" @bind-Value="employee.LastName" For="@(() => employee.LastName)"></MudTextField>
+            <MudTextField Required="true" Label="Department" @bind-Value="employee.Department" For="@(() => employee.Department)"></MudTextField>
+            <MudTextField Required="true" InputType="InputType.Email" Label="Email" @bind-Value="employee.Email" For="@(() => employee.Email)"></MudTextField>
+            <MudDatePicker Required="true" MaxDate="DateTime.Now" Label="DOB" @bind-Date="employee.DateOfBrith" For="@(() => employee.DateOfBrith)" PickerVariant="PickerVariant.Dialog"></MudDatePicker>
+            <MudItem Class="d-flex py-5 float-end">
+                <MudButton OnClick="Cancel" Color="Color.Primary">Cancel</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Submit</MudButton>
+        </MudItem>   
+        
+        </EditForm>
+    </DialogContent>
+    
+</MudDialog>
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+    [Parameter]
+    public Employee employee { get; set; } = new();
+    private void Cancel() => MudDialog.Cancel();
+    private void Close() => MudDialog.Close<Employee>(employee);
+    private void OnValidSubmit(EditContext context)
+    {
+        if(context.Validate())
+        {
+            Close();
+        }
+    }
+}

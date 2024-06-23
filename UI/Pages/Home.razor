@@ -1,0 +1,104 @@
+﻿@page "/"
+@using MudBlazor
+@using Newtonsoft.Json
+@using Utility
+
+<PageTitle>Employee List</PageTitle>
+
+<MudContainer>
+    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" OnClick="()=>ManageEmployee(0)" Class="mb-4 justify-end">Add Employee</MudButton>
+    <MudTable Items="employees" Hover="true" Filter="new Func<Employee,bool>(_quickFilter)">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Employees</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<Employee, object>(x=>x.FirstName)">First Name</MudTableSortLabel></MudTh>
+            <MudTh>Last Name</MudTh>
+            <MudTh>Department</MudTh>
+            <MudTh>Email</MudTh>
+            <MudTh>DOB</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="First Name">@context.FirstName</MudTd>
+            <MudTd DataLabel="Last Name">@context.LastName</MudTd>
+            <MudTd DataLabel="Department">@context.Department</MudTd>
+            <MudTd DataLabel="Email">@context.Email</MudTd>
+            <MudTd DataLabel="DOB">@context.DateOfBrith.Value.ToShortDateString()</MudTd>
+            <MudTd DataLabel="Actions">
+                <MudIconButton Variant="Variant.Filled" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" OnClick="()=> ManageEmployee(context.EmployeeId)"></MudIconButton>
+                <MudIconButton Variant="Variant.Filled" Color="Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick="()=> Deleteemployee(context.EmployeeId)"></MudIconButton>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+</MudContainer>
+
+@code {
+    [Inject]
+    public HttpClient httpClient { get; set; }
+    private List<Employee> employees;
+    private string _searchString;
+
+    protected override async Task OnInitializedAsync()
+    {
+        employees = await GetAllEmployees();
+    }
+    public async Task<List<Employee>> GetAllEmployees()
+    {
+        var response = await httpClient.GetAsync("/Emp/GetAllEmployees");
+        var contentTemp = await response.Content.ReadAsStringAsync();
+        return JsonConvert.DeserializeObject<List<Employee>>(contentTemp);
+
+    }
+
+    private void ManageEmployee(int id)
+    {
+        if (id > 0)
+        {
+            NavManager.NavigateTo($"/ManageEmployee/{id}");
+        }
+        else
+        {
+            NavManager.NavigateTo("/AddEmployee");
+        }
+
+    }
+
+    private async Task Deleteemployee(int employeeid)
+    {
+        var status = await httpClient.DeleteAsync($"/Emp/DeleteEmployee?id={employeeid}");
+        if (status.IsSuccessStatusCode)
+        {
+            snackbar.Add("Employee deleted successfully!", Severity.Success);
+            employees = await GetAllEmployees();
+        }
+        else
+        {
+            snackbar.Add("Something went wrong!", Severity.Error);
+
+        }
+    }
+    private Func<Employee, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.FirstName.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.LastName.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (x.Email.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (x.Department.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+       
+        return false;
+    };
+}
