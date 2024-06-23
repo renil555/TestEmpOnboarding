@@ -6,13 +6,15 @@
 <PageTitle>Employee List</PageTitle>
 
 <MudContainer>
-    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" OnClick="()=>ManageEmployee(0)" Class="mb-4 justify-end">Add Employee</MudButton>
+    <div class="text-end">
+        <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" OnClick="()=>ManageEmployee(0)" Class="mb-4">Add Employee</MudButton>
+    </div>
     <MudTable Items="employees" Hover="true" Filter="new Func<Employee,bool>(_quickFilter)">
         <ToolBarContent>
             <MudText Typo="Typo.h6">Employees</MudText>
             <MudSpacer />
-            <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
-                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudTextField Style="width: 100%" @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-3 align-end"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
             <MudTh><MudTableSortLabel SortBy="new Func<Employee, object>(x=>x.FirstName)">First Name</MudTableSortLabel></MudTh>
@@ -98,7 +100,7 @@
             return true;
         if (x.Department.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-       
+
         return false;
     };
 }
